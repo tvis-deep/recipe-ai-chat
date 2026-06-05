@@ -45,8 +45,6 @@ jQuery(function ($) {
 
             $('#recipe-ai-input').val('');
 
-            scrollBottom();
-
             $('#recipe-ai-messages').append(
                 `
                 <div class="recipe-ai-message ai typing">
@@ -57,25 +55,56 @@ jQuery(function ($) {
 
             scrollBottom();
 
-            /*
-             * OpenAI call comes later
-             */
+            $.ajax({
 
-            setTimeout(function () {
+                url: RecipeAI.endpoint,
 
-                $('.typing').remove();
+                method: 'POST',
 
-                $('#recipe-ai-messages').append(
-                    `
-                    <div class="recipe-ai-message ai">
-                        This is a sample AI response.
-                    </div>
-                    `
-                );
+                beforeSend: function (xhr) {
 
-                scrollBottom();
+                    xhr.setRequestHeader(
+                        'X-WP-Nonce',
+                        RecipeAI.nonce
+                    );
 
-            }, 1000);
+                },
+
+                data: {
+                    message: message
+                },
+
+                success: function (response) {
+
+                    $('.typing').remove();
+
+                    $('#recipe-ai-messages').append(
+                        `
+                        <div class="recipe-ai-message ai">
+                            ${response.reply}
+                        </div>
+                        `
+                    );
+
+                    scrollBottom();
+
+                },
+
+                error: function () {
+
+                    $('.typing').remove();
+
+                    $('#recipe-ai-messages').append(
+                        `
+                        <div class="recipe-ai-message ai">
+                            Something went wrong.
+                        </div>
+                        `
+                    );
+
+                }
+
+            });
 
         }
     );

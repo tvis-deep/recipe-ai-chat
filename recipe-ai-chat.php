@@ -12,6 +12,7 @@ define('RECIPE_AI_PATH', plugin_dir_path(__FILE__));
 require_once RECIPE_AI_PATH . 'includes/api.php';
 require_once RECIPE_AI_PATH . 'includes/openai.php';
 
+require_once RECIPE_AI_PATH . 'includes/rest-api.php';
 require_once RECIPE_AI_PATH . 'includes/shortcode.php';
 
 add_action('wp_enqueue_scripts', function() {
