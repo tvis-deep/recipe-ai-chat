@@ -14,6 +14,7 @@ require_once RECIPE_AI_PATH . 'includes/openai.php';
 
 require_once RECIPE_AI_PATH . 'includes/rest-api.php';
 require_once RECIPE_AI_PATH . 'includes/shortcode.php';
+require_once RECIPE_AI_PATH . 'includes/conversations.php';
 
 add_action('wp_enqueue_scripts', function() {
 
@@ -64,86 +65,3 @@ function recipe_ai_create_conversation($session_id)
 
     return $wpdb->insert_id;
 }
-/*Save Message*/
-function recipe_ai_save_message(
-    $conversation_id,
-    $role,
-    $message
-)
-{
-    global $wpdb;
-
-    $table = $wpdb->prefix . 'recipe_ai_messages';
-
-    $wpdb->insert(
-        $table,
-        [
-            'conversation_id' => $conversation_id,
-            'role'            => $role,
-            'message'         => $message,
-        ]
-    );
-
-    return $wpdb->insert_id;
-}
-/*Load Chat History*/
-function recipe_ai_get_history(
-    $conversation_id,
-    $limit = 20
-)
-{
-    global $wpdb;
-
-    $table = $wpdb->prefix . 'recipe_ai_messages';
-
-    $rows = $wpdb->get_results(
-        $wpdb->prepare(
-            "
-            SELECT role, message
-            FROM {$table}
-            WHERE conversation_id = %d
-            ORDER BY id DESC
-            LIMIT %d
-            ",
-            $conversation_id,
-            $limit
-        ),
-        ARRAY_A
-    );
-
-    $rows = array_reverse($rows);
-
-    $messages = [];
-
-    foreach ($rows as $row) {
-
-        $messages[] = [
-            'role'    => $row['role'],
-            'content' => $row['message']
-        ];
-    }
-
-    return $messages;
-}
-/* chat shortcode*/
-function recipe_chat_func( $atts ) {
-    $attributes = shortcode_atts( array(
-        'title' => false,
-        'limit' => 4,
-    ), $atts );
-    
-    ob_start();
-    ?>
-    <div id="recipe-chat">
-        <div id="recipe-messages"></div>
-        <textarea id="recipe-input"></textarea>
-        <button id="recipe-send">
-            Send
-        </button>
-    </div>
-    <?php
-
-    return ob_get_clean();
-
-}
-add_shortcode( 'recipe-chat', 'recipe_chat_func' );

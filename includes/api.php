@@ -20,7 +20,7 @@ function recipe_ai_chat($request)
         $request->get_param('message')
     );
 
-    $response = recipe_ai_openai($message);
+    $response = recipe_ai_openai([$message]);
 
     return [
         'success' => true,

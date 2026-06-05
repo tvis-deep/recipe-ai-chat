@@ -15,27 +15,50 @@ add_action('rest_api_init', function () {
     );
 
 });
-
-function recipe_ai_chat_callback(WP_REST_Request $request)
+function recipe_ai_chat_callback(
+    WP_REST_Request $request
+)
 {
     $message = sanitize_textarea_field(
         $request->get_param('message')
     );
 
-    if (empty($message)) {
+    if (!$message) {
 
         return new WP_Error(
             'empty_message',
-            'Message is required',
-            ['status' => 400]
+            'Message required'
         );
 
     }
 
-    $reply = recipe_ai_openai_chat($message);
+    $conversation_id =
+        recipe_ai_get_conversation_id();
 
-    return rest_ensure_response([
+    recipe_ai_save_message(
+        $conversation_id,
+        'user',
+        $message
+    );
+
+    $history =
+        recipe_ai_get_history(
+            $conversation_id
+        );
+
+    $reply =
+        recipe_ai_openai_chat(
+            $history
+        );
+
+    recipe_ai_save_message(
+        $conversation_id,
+        'assistant',
+        $reply
+    );
+
+    return [
         'success' => true,
-        'reply'   => $reply
-    ]);
+        'reply' => $reply
+    ];
 }
