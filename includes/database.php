@@ -70,3 +70,47 @@ function recipe_ai_create_tables()
 
     dbDelta($sql);
 }
+function recipe_ai_create_recipe_table()
+{
+    global $wpdb;
+
+    require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+
+    $table = $wpdb->prefix . 'recipe_ai_recipes';
+
+    $charset = $wpdb->get_charset_collate();
+
+    $sql = "
+
+    CREATE TABLE {$table} (
+
+        recipe_id BIGINT UNSIGNED NOT NULL,
+
+        title VARCHAR(255) NOT NULL,
+
+        slug VARCHAR(255) NOT NULL,
+
+        image_url TEXT,
+
+        calories INT DEFAULT 0,
+
+        protein INT DEFAULT 0,
+
+        recipe_json LONGTEXT,
+
+        document LONGTEXT,
+
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+
+        PRIMARY KEY (recipe_id),
+
+        KEY slug (slug)
+
+    ) {$charset};
+
+    ";
+
+    dbDelta($sql);
+}
