@@ -114,3 +114,35 @@ function recipe_ai_create_recipe_table()
 
     dbDelta($sql);
 }
+function recipe_ai_create_embeddings_table()
+{
+    global $wpdb;
+
+    require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+
+    $table = $wpdb->prefix . 'recipe_ai_embeddings';
+
+    $charset = $wpdb->get_charset_collate();
+
+    $sql = "
+
+    CREATE TABLE {$table} (
+
+        recipe_id BIGINT UNSIGNED NOT NULL,
+
+        embedding LONGTEXT NOT NULL,
+
+        model VARCHAR(100) NOT NULL,
+
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+
+        PRIMARY KEY (recipe_id)
+
+    ) {$charset};
+
+    ";
+
+    dbDelta($sql);
+}
