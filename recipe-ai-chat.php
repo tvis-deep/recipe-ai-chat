@@ -17,6 +17,9 @@ require_once RECIPE_AI_PATH . 'includes/shortcode.php';
 require_once RECIPE_AI_PATH . 'includes/conversations.php';
 require_once RECIPE_AI_PATH . 'includes/importer.php';
 require_once RECIPE_AI_PATH . 'includes/embeddings.php';
+require_once RECIPE_AI_PATH . 'includes/helpers.php';
+require_once RECIPE_AI_PATH . 'includes/search.php';
+require_once RECIPE_AI_PATH . 'includes/ingredient-matcher.php';
 
 add_action('wp_enqueue_scripts', function() {
 
@@ -46,17 +49,16 @@ add_action('wp_enqueue_scripts', function() {
 /* Register Activation Hook for create tables*/
 require_once plugin_dir_path(__FILE__) . 'includes/database.php';
 
+function recipe_ai_activate()
+{
+    recipe_ai_create_tables();
+    recipe_ai_create_recipe_table();
+    recipe_ai_create_embeddings_table();
+}
+
 register_activation_hook(
     __FILE__,
-    'recipe_ai_create_tables'
-);
-register_activation_hook(
-    __FILE__,
-    'recipe_ai_create_recipe_table'
-);
-register_activation_hook(
-    __FILE__,
-    'recipe_ai_create_embeddings_table'
+    'recipe_ai_activate'
 );
 /*Create Conversation*/
 function recipe_ai_create_conversation($session_id)

@@ -1,106 +1,43 @@
 <?php
 
 defined('ABSPATH') || exit;
-
+/*Build Search Document*/
 function recipe_ai_build_document($recipe)
 {
-    $document = '';
+    $parts = [];
 
-    $document .= 'Recipe Name: '
-        . $recipe['name']
-        . "\n\n";
+    $parts[] = $recipe['name'] ?? '';
 
-    $document .= 'Summary: '
-        . wp_strip_all_tags(
-            $recipe['summary']
-        )
-        . "\n\n";
+    $parts[] = wp_strip_all_tags(
+        $recipe['summary'] ?? ''
+    );
 
-    if (!empty($recipe['tags']['cuisine'])) {
-
-        $document .= 'Cuisine: '
-            . implode(
-                ', ',
-                $recipe['tags']['cuisine']
-            )
-            . "\n";
-    }
-
-    if (!empty($recipe['tags']['keyword'])) {
-
-        $document .= 'Keywords: '
-            . implode(
-                ', ',
-                $recipe['tags']['keyword']
-            )
-            . "\n";
-    }
-
-    $document .= "\nIngredients:\n";
-
-    foreach (
-        $recipe['ingredients_flat']
-        as $ingredient
-    ) {
-
-        $document .= '- '
-            . $ingredient['name']
-            . "\n";
-    }
-
-    $document .= "\nInstructions:\n";
-
-    foreach (
-        $recipe['instructions_flat']
-        as $step
-    ) {
-
-        $document .= '- '
-            . wp_strip_all_tags(
-                $step['text']
-            )
-            . "\n";
-    }
-
-    if (!empty($recipe['nutrition'])) {
-
-        $document .= "\nNutrition:\n";
+    if (!empty($recipe['ingredients_flat'])) {
 
         foreach (
-            $recipe['nutrition']
-            as $key => $value
+            $recipe['ingredients_flat']
+            as $ingredient
         ) {
-
-            $document .=
-                ucfirst(
-                    str_replace(
-                        '_',
-                        ' ',
-                        $key
-                    )
-                )
-                . ': '
-                . $value
-                . "\n";
+            $parts[] = $ingredient['name'];
         }
     }
 
     if (
         !empty(
-            $recipe['parent']['post_content']
+            $recipe['tags']['keyword']
         )
     ) {
 
-        $document .=
-            "\nRecipe Article:\n";
-
-        $document .=
-            wp_strip_all_tags(
-                $recipe['parent']['post_content']
-            );
+        $parts = array_merge(
+            $parts,
+            $recipe['tags']['keyword']
+        );
     }
 
-    return trim($document);
+    return implode(
+        ' ',
+        array_filter($parts)
+    );
 }
 /*Import Single Recipe*/
 function recipe_ai_import_recipe(
@@ -113,10 +50,35 @@ function recipe_ai_import_recipe(
         $wpdb->prefix .
         'recipe_ai_recipes';
 
-    $document =
-        recipe_ai_build_document(
-            $recipe
-        );
+    $ingredients = [];
+
+    if (
+        !empty(
+            $recipe['ingredients_flat']
+        )
+    ) {
+
+        foreach (
+            $recipe['ingredients_flat']
+            as $ingredient
+        ) {
+
+            $ingredients[] =
+                strtolower(
+                    trim(
+                        $ingredient['name']
+                    )
+                );
+        }
+    }
+
+    $keywords =
+        $recipe['tags']['keyword']
+        ?? [];
+
+    $cuisine =
+        $recipe['tags']['cuisine']
+        ?? [];
 
     $wpdb->replace(
         $table,
@@ -134,24 +96,44 @@ function recipe_ai_import_recipe(
             'image_url' =>
                 $recipe['image_url'],
 
-            'calories' =>
-                $recipe['nutrition']['calories']
-                ?? 0,
+            'ingredients_text' =>
+                implode(
+                    ',',
+                    $ingredients
+                ),
 
-            'protein' =>
-                $recipe['nutrition']['protein']
-                ?? 0,
+            'keywords_text' =>
+                implode(
+                    ',',
+                    $keywords
+                ),
+
+            'cuisine_text' =>
+                implode(
+                    ',',
+                    $cuisine
+                ),
+
+            'calories' =>
+                intval(
+                    $recipe['nutrition']['calories']
+                    ?? 0
+                ),
+
+            'document' =>
+                recipe_ai_build_document(
+                    $recipe
+                ),
 
             'recipe_json' =>
                 wp_json_encode(
                     $recipe
                 ),
 
-            'document' =>
-                $document,
-
             'updated_at' =>
-                current_time('mysql')
+                current_time(
+                    'mysql'
+                )
 
         ]
     );
@@ -162,32 +144,34 @@ function recipe_ai_import_json_file(
 )
 {
     if (
-        !file_exists(
-            $file_path
-        )
+        !file_exists($file_path)
     ) {
-        return false;
+        return 0;
     }
 
     $json =
+        file_get_contents(
+            $file_path
+        );
+
+    $recipes =
         json_decode(
-            file_get_contents(
-                $file_path
-            ),
+            $json,
             true
         );
 
     if (
-        !is_array(
-            $json
-        )
+        empty($recipes)
     ) {
-        return false;
+        return 0;
     }
 
     $count = 0;
 
-    foreach ($json as $recipe) {
+    foreach (
+        $recipes
+        as $recipe
+    ) {
 
         recipe_ai_import_recipe(
             $recipe

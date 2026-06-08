@@ -80,37 +80,41 @@ function recipe_ai_create_recipe_table()
 
     $charset = $wpdb->get_charset_collate();
 
-    $sql = "
+    $sql = "CREATE TABLE {$table} (
 
-    CREATE TABLE {$table} (
+        id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
 
         recipe_id BIGINT UNSIGNED NOT NULL,
 
         title VARCHAR(255) NOT NULL,
 
-        slug VARCHAR(255) NOT NULL,
+        slug VARCHAR(255),
 
         image_url TEXT,
 
+        ingredients_text LONGTEXT,
+
+        keywords_text LONGTEXT,
+
+        cuisine_text TEXT,
+
         calories INT DEFAULT 0,
 
-        protein INT DEFAULT 0,
+        document LONGTEXT,
 
         recipe_json LONGTEXT,
-
-        document LONGTEXT,
 
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
 
         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
 
-        PRIMARY KEY (recipe_id),
+        PRIMARY KEY (id),
 
-        KEY slug (slug)
+        UNIQUE KEY recipe_id (recipe_id),
 
-    ) {$charset};
+        KEY title (title)
 
-    ";
+    ) {$charset};";
 
     dbDelta($sql);
 }
