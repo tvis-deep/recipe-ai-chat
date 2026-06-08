@@ -332,11 +332,9 @@ function recipe_ai_format_recipe_response(
             $recipe['instructions_flat']
             as $instruction
         ) {
-
-            $instructions[] =
-                wp_strip_all_tags(
-                    $instruction['text']
-                );
+            if ( $instruction['text']) {
+                $instructions[] = wp_strip_all_tags($instruction['text']);
+            }
         }
     }
 
