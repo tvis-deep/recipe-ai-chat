@@ -109,4 +109,22 @@ jQuery(function ($) {
         }
     );
 
+    $(document).on('click', '.recipe-view-btn',function()    {
+            let recipeId =
+                $(this).data('id');
+
+            $.get(
+                '/wp-json/recipe-ai/v1/recipe/' +
+                recipeId,
+                function(response)
+                {
+                    console.log(
+                        response.recipe
+                    );
+
+                    // render modal
+                }
+            );
+        }
+    );
 });

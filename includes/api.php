@@ -4,7 +4,7 @@ add_action('rest_api_init', function() {
 
     register_rest_route(
         'recipe-ai/v1',
-        '/chat',
+        '/openai-chat',
         [
             'methods'  => 'POST',
             'callback' => 'recipe_ai_chat',
