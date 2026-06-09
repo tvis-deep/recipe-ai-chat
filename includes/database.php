@@ -1,21 +1,14 @@
 <?php
-
 defined('ABSPATH') || exit;
-
 function recipe_ai_create_tables()
 {
     global $wpdb;
-
     require_once ABSPATH . 'wp-admin/includes/upgrade.php';
-
     $charset_collate = $wpdb->get_charset_collate();
-
     $conversations = $wpdb->prefix . 'recipe_ai_conversations';
     $messages      = $wpdb->prefix . 'recipe_ai_messages';
 
-    $sql = "
-
-    CREATE TABLE {$conversations} (
+    $sql = "CREATE TABLE {$conversations} (
 
         id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
 
@@ -64,11 +57,17 @@ function recipe_ai_create_tables()
 
         KEY created_at (created_at)
 
-    ) {$charset_collate};
+    ) {$charset_collate};";
 
-    ";
+    if ( $wpdb->get_var(
+        $wpdb->prepare(
+            "SHOW TABLES LIKE %s",
+            $conversations
+        )
+    ) !== $conversations ) {
 
-    dbDelta($sql);
+        dbDelta($sql);
+    }
 }
 function recipe_ai_create_recipe_table()
 {
@@ -116,7 +115,20 @@ function recipe_ai_create_recipe_table()
 
     ) {$charset};";
 
-    dbDelta($sql);
+    if ( $wpdb->get_var(
+        $wpdb->prepare(
+            "SHOW TABLES LIKE %s",
+            $table
+        )
+    ) !== $table ) {
+
+        dbDelta($sql);
+    }
+    // dbDelta($sql);
+
+     if ($wpdb->last_error) {
+        error_log('DB Error: ' . $wpdb->last_error);
+    }
 }
 function recipe_ai_create_embeddings_table()
 {
@@ -128,9 +140,7 @@ function recipe_ai_create_embeddings_table()
 
     $charset = $wpdb->get_charset_collate();
 
-    $sql = "
-
-    CREATE TABLE {$table} (
+    $sql = "CREATE TABLE {$table} (
 
         recipe_id BIGINT UNSIGNED NOT NULL,
 
@@ -144,9 +154,15 @@ function recipe_ai_create_embeddings_table()
 
         PRIMARY KEY (recipe_id)
 
-    ) {$charset};
+    ) {$charset};";
 
-    ";
+     if ( $wpdb->get_var(
+        $wpdb->prepare(
+            "SHOW TABLES LIKE %s",
+            $table
+        )
+    ) !== $table ) {
 
-    dbDelta($sql);
+        dbDelta($sql);
+    }
 }
