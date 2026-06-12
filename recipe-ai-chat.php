@@ -33,9 +33,14 @@ add_action('wp_enqueue_scripts', function() {
         ]
     );
 
+    $chat_v = filemtime(plugin_dir_path(__FILE__) . 'assets/chat.css')??'1.0'; 
+
     wp_enqueue_style(
         'recipe-ai-chat',
-        RECIPE_AI_URL . 'assets/chat.css'
+        RECIPE_AI_URL . 'assets/chat.css',
+        array(), 
+        $chat_v, 
+        'all' 
     );
 });
 

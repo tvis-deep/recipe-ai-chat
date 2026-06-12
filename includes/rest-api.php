@@ -74,7 +74,7 @@ function recipe_ai_chat_endpoint(
     }
     $results = recipe_ai_search(
         $message,
-        10
+        9
     );
     if (empty($results)) {
 
@@ -122,7 +122,7 @@ function recipe_ai_build_chat_response(
                     <?php if (!empty($recipe['image_url'])) : ?>
 
                         <img
-                            src="<?php echo esc_url($recipe['image_url']); ?>"
+                            src="<?php echo esc_url(str_replace('dev.', '', $recipe['image_url'])); ?>"
                             alt="<?php echo esc_attr($recipe['title']); ?>"
                         >
 

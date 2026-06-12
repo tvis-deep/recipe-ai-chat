@@ -80,6 +80,100 @@ function recipe_ai_import_recipe(
         $recipe['tags']['cuisine']
         ?? [];
 
+    $search_parts = [];
+
+    /*
+    |--------------------------------------------------------------------------
+    | Title
+    |--------------------------------------------------------------------------
+    */
+    $search_parts[] = strtolower(
+        $recipe['name'] ?? ''
+    );
+
+    /*
+    |--------------------------------------------------------------------------
+    | Ingredients
+    |--------------------------------------------------------------------------
+    */
+    $search_parts[] = implode(
+        ' ',
+        $ingredients
+    );
+
+    /*
+    |--------------------------------------------------------------------------
+    | Keywords
+    |--------------------------------------------------------------------------
+    */
+    $search_parts[] = implode(
+        ' ',
+        $keywords
+    );
+
+    /*
+    |--------------------------------------------------------------------------
+    | Cuisine
+    |--------------------------------------------------------------------------
+    */
+    $search_parts[] = implode(
+        ' ',
+        $cuisine
+    );
+    /*Include Instructions*/
+   
+    if (!empty($recipe['instructions_flat'])) {
+        foreach ($recipe['instructions_flat']as $instruction) {
+            if (isset($instruction['text'])) {
+                $search_parts[] = wp_strip_all_tags($instruction['text']);
+            }
+        }
+    }
+    /*Include Recipe Summary*/
+
+    $search_parts[] =wp_strip_all_tags($recipe['summary'] ?? '');
+
+    /*Include Parent Post Content*/
+    if (!empty($recipe['parent']['post_content'])) {
+        $search_parts[] =
+            wp_strip_all_tags(
+                $recipe['parent']['post_content']
+            );
+    }
+    /*Include nutrition*/
+    $nutrition =
+        $recipe['nutrition']
+        ?? [];
+
+    foreach (
+        $nutrition as $key => $value
+    ) {
+
+        if (
+            !empty($value)
+        ) {
+
+            $search_parts[] =
+                strtolower($key);
+
+        }
+    }
+    /*Create Final Search Text*/
+    $search_text =
+        strtolower(
+            implode(
+                ' ',
+                $search_parts
+            )
+        );
+
+    $search_text =
+        preg_replace(
+            '/\s+/',
+            ' ',
+            $search_text
+        );
+
     $wpdb->replace(
         $table,
         [
@@ -119,6 +213,8 @@ function recipe_ai_import_recipe(
                     $recipe['nutrition']['calories']
                     ?? 0
                 ),
+
+            'search_text' => $search_text,
 
             'document' =>
                 recipe_ai_build_document(

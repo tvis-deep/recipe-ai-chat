@@ -1,26 +1,31 @@
-#recipe-ai-chat-wrapper {
-    max-width: 800px;
-    margin: 0 auto;
-    border: 1px solid #ddd;
-    border-radius: 12px;
-    overflow: hidden;
-    background: #fff;
-}
+#recipe-ai-chat-wrapper{
+    max-width:900px;
+    margin:40px auto;
+    background:#fff;
+    border-radius:24px;
+    overflow:hidden;
 
+    box-shadow: 0 10px 40px rgba(0,0,0,.08);
+}
 #recipe-ai-header {
-    padding: 20px;
-    border-bottom: 1px solid #eee;
+  padding:30px;
+    border-bottom:1px solid #eee;
 }
 
 #recipe-ai-header h3 {
-    margin: 0 0 10px;
+      margin:0;
+    font-size:28px;
+    font-weight:700;
 }
-
+#recipe-ai-header p{
+    margin:8px 0 0;
+    color:#777;
+}
 #recipe-ai-messages {
-    height: 500px;
-    overflow-y: auto;
-    padding: 20px;
-    background: #fafafa;
+    height:600px;
+    overflow-y:auto;
+    padding:25px;
+    background:#fafafa;
 }
 
 .recipe-ai-message {
@@ -32,43 +37,227 @@
 }
 
 .recipe-ai-message.user {
-    margin-left: auto;
-    background: #e8f0fe;
+   margin-left:auto;
+
+    background:#2563eb;
+    color:#fff;
+
+    padding:16px 20px;
+    border-radius:18px;
+
+    max-width:70%;
 }
 
 .recipe-ai-message.ai {
-    background: #f1f1f1;
+     background:#fff;
+    padding:18px 20px;
+    border-radius:18px;
+    max-width:90%;
+    margin-bottom:15px;
+
+    box-shadow:
+        0 2px 10px rgba(0,0,0,.05);
 }
 
 .recipe-ai-message.typing {
     font-style: italic;
 }
+#recipe-ai-suggestions{
 
-#recipe-ai-suggestions {
-    padding: 15px;
-    border-top: 1px solid #eee;
+    display:flex;
+    gap:10px;
+
+    flex-wrap:wrap;
+
+    padding:15px 25px;
+
+    border-top:1px solid #eee;
 }
 
-.recipe-ai-suggestion {
-    margin: 5px;
-    cursor: pointer;
+.recipe-ai-suggestion{
+
+    border:none;
+
+    background:#f3f4f6;
+
+    border-radius:999px;
+
+    padding:10px 16px;
+
+    cursor:pointer;
+
+    transition:.2s;
+}
+.recipe-ai-suggestion:hover{
+    background:#e5e7eb;
 }
 
-#recipe-ai-input-wrap {
-    display: flex;
-    gap: 10px;
-    padding: 15px;
-    border-top: 1px solid #eee;
+#recipe-ai-input-wrap{
+
+    display:flex;
+
+    gap:10px;
+
+    padding:20px;
+
+    border-top:1px solid #eee;
+
+    background:#fff;
+}
+#recipe-ai-input{
+
+    flex:1;
+
+    border:1px solid #ddd;
+
+    border-radius:14px;
+
+    padding:15px;
+
+    resize:none;
+
+    min-height:60px;
+}
+#recipe-ai-send{
+
+    width:120px;
+
+    border:none;
+
+    border-radius:14px;
+
+    background:#2563eb;
+
+    color:#fff;
+
+    font-weight:600;
+}
+/* recipe card design in chat */
+.recipe-ai-results {
+    margin-top: 15px;
 }
 
-#recipe-ai-input {
-    flex: 1;
-    resize: none;
-    height: 60px;
-    padding: 10px;
+.recipe-ai-heading {
+    margin-bottom: 20px;
+    font-size: 16px;
+    font-weight: 600;
 }
 
-#recipe-ai-send {
-    width: 120px;
-    cursor: pointer;
+.recipe-ai-cards {
+     display:grid;
+    grid-template-columns:
+        repeat(3,minmax(0,1fr));
+
+    gap:18px;
+
+    margin-top:20px;
+}
+.recipe-ai-card {
+   background:#fff;
+    border-radius:18px;
+
+    overflow:hidden;
+
+    cursor:pointer;
+
+    transition:.25s;
+
+    box-shadow:
+        0 4px 16px rgba(0,0,0,.08);
+}
+
+.recipe-ai-card:hover {
+     transform:translateY(-4px);
+
+    box-shadow:
+        0 12px 25px rgba(0,0,0,.15);
+}
+.recipe-ai-card-image {
+    height: 220px;
+    overflow: hidden;
+}
+
+.recipe-ai-card img {
+      width:100%;
+    height:180px;
+
+    object-fit:cover;
+
+    display:block;
+}
+.recipe-ai-card-content{
+    padding:16px;
+}
+.recipe-ai-card-body {
+    padding: 16px;
+}
+.recipe-ai-card h4 {
+   
+    font-size:18px;
+    line-height:1.4;
+
+    margin:0 0 10px;
+
+    font-weight:700;
+
+    color:#222;
+}
+.recipe-ai-meta{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+
+    margin-bottom:15px;
+}
+
+.recipe-ai-meta span{
+
+    background:#f3f4f6;
+
+    padding:6px 10px;
+
+    border-radius:999px;
+
+    font-size:12px;
+
+    color:#555;
+}
+.recipe-view-btn{
+
+    width:100%;
+
+    background:#111827;
+
+    color:#fff;
+
+    border:none;
+
+    border-radius:12px;
+
+    padding:12px;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:.2s;
+}
+.recipe-view-btn:hover{
+    background:#000;
+}
+@media(max-width:991px){
+
+    .recipe-ai-cards{
+        grid-template-columns:
+            repeat(2,1fr);
+    }
+
+}
+@media(max-width:767px){
+
+    .recipe-ai-cards{
+        grid-template-columns:
+            1fr;
+    }
+
 }

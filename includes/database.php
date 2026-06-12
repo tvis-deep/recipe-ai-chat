@@ -99,6 +99,8 @@ function recipe_ai_create_recipe_table()
 
         calories INT DEFAULT 0,
 
+        search_text LONGTEXT NULL,
+
         document LONGTEXT,
 
         recipe_json LONGTEXT,
@@ -124,7 +126,6 @@ function recipe_ai_create_recipe_table()
 
         dbDelta($sql);
     }
-    // dbDelta($sql);
 
      if ($wpdb->last_error) {
         error_log('DB Error: ' . $wpdb->last_error);

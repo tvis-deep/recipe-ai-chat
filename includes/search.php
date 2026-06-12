@@ -18,6 +18,8 @@ function recipe_ai_search_by_ingredients(
             $query
         );
 
+
+
     if (
         empty($user_ingredients)
     ) {
@@ -79,13 +81,13 @@ function recipe_ai_search_by_ingredients(
 }
 /*Add Keyword Search*/
 function recipe_ai_calculate_keyword_score(
-    $query,
+    $words,
     $recipe
 )
 {
     $score = 0;
 
-    $query = strtolower($query);
+    // $query = strtolower($query);
 
     $title =
         strtolower(
@@ -107,11 +109,11 @@ function recipe_ai_calculate_keyword_score(
             $recipe['document']
         );
 
-    $words =
+   /* $words =
         preg_split(
             '/\s+/',
             $query
-        );
+        );*/
 
     foreach ($words as $word) {
 
@@ -207,11 +209,19 @@ function recipe_ai_search(
         recipe_ai_extract_ingredients(
             $query
         );
+    print_r($user_ingredients);
+
+    $user_ingredients =
+        recipe_ai_extract_ingredients_from_words(
+            $user_ingredients
+        );
 
     $results = [];
 
     foreach ($recipes as $recipe) {
-
+        if (empty($recipe['ingredients_text'])) {
+            continue;
+        }
         $score = 0;
 
         /*
@@ -229,14 +239,14 @@ function recipe_ai_search(
                     $recipe['ingredients_text']
                 );
 
-            $score +=
-                (
-                    $match['matched']
-                    * 30
-                );
+  
+            
 
-            $recipe['ingredient_matches'] =
-                $match['matched'];
+            // $score +=($match['matched']* 30);
+            $score += ($match['coverage']* 2);
+
+            $recipe['ingredient_matches'] =$match['matched'];
+            $recipe['match'] = $match;
         }
 
         /*
@@ -244,18 +254,18 @@ function recipe_ai_search(
          */
         $score +=
             recipe_ai_calculate_keyword_score(
-                $query,
+                $user_ingredients,
                 $recipe
             );
 
         /*
          * Exact Match
          */
-        $score +=
+        /*$score +=
             recipe_ai_exact_match_score(
-                $query,
+                $user_ingredients,
                 $recipe
-            );
+            );*/
 
         if ($score <= 0) {
             continue;
@@ -267,13 +277,15 @@ function recipe_ai_search(
         $results[] =
             $recipe;
     }
-
     usort(
         $results,
         fn($a, $b)
             => $b['score']
             <=> $a['score']
     );
+
+    print_r($user_ingredients);
+    print_r($results);
 
     return array_slice(
         $results,
