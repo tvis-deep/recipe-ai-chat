@@ -9,6 +9,14 @@ function recipe_ai_log(
     $filename = 'search-log.txt'
 )
 {
+    if (
+        !defined('RECIPE_AI_DEBUG')
+        ||
+        !RECIPE_AI_DEBUG
+    ) {
+        return;
+    }
+
     $dir =
         plugin_dir_path(
             dirname(__FILE__)
@@ -21,18 +29,18 @@ function recipe_ai_log(
     $file =
         $dir . $filename;
 
-    $timestamp =
-        current_time(
-            'mysql'
-        );
-
     $content =
-        "\n\n====================================\n";
+        "\n====================================\n";
 
     $content .=
-        $timestamp . "\n";
+        current_time('mysql') .
+        "\n";
 
-    if (is_array($data) || is_object($data)) {
+    if (
+        is_array($data)
+        ||
+        is_object($data)
+    ) {
 
         $content .=
             print_r(

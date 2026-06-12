@@ -288,7 +288,7 @@ function recipe_ai_calculate_score(
             ) !== false
         ) {
             $score += 50;
-            $debug[] = "SEARCH_TEXT: {$term} (+10)";
+            $debug[] = "keywords_text: {$term} (+10)";
         }
 
         /*
@@ -362,7 +362,7 @@ function recipe_ai_search(
         $recipe['score'] = $scoring['score'];
 
         $recipe['debug'] =$scoring['debug'];
-        
+
         if ($recipe['score'] <= 0) {
             continue;
         }
@@ -421,7 +421,10 @@ function recipe_ai_search(
                         $recipe['title'],
 
                     'score' =>
-                        $recipe['score']
+                        $recipe['score'],
+                        
+                    'debug' =>
+                        $recipe['debug']
 
                 ];
 
@@ -460,6 +463,7 @@ function recipe_ai_is_noise_word($word)
         'have',
         'got',
         'some',
+        'something',
         'any',
         'for',
         'and',
