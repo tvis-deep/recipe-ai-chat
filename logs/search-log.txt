@@ -1,0 +1,95 @@
+
+
+====================================
+2026-06-12 06:44:31
+Array
+(
+    [query] => chicken
+    [terms] => Array
+        (
+            [0] => chicken
+        )
+
+)
+
+
+====================================
+2026-06-12 06:44:31
+Array
+(
+    [query] => chicken
+    [results] => Array
+        (
+            [0] => Array
+                (
+                    [recipe_id] => 10976
+                    [title] => Chicken and Broccoli Lasagna
+                    [score] => 260
+                )
+
+            [1] => Array
+                (
+                    [recipe_id] => 2547
+                    [title] => Air Fryer Blackened Chicken
+                    [score] => 230
+                )
+
+            [2] => Array
+                (
+                    [recipe_id] => 2744
+                    [title] => Satay Chicken and Broccoli
+                    [score] => 230
+                )
+
+            [3] => Array
+                (
+                    [recipe_id] => 2755
+                    [title] => Thai Style Chicken Mince and Rice
+                    [score] => 230
+                )
+
+            [4] => Array
+                (
+                    [recipe_id] => 2772
+                    [title] => Thai Chicken Chilli and Basil
+                    [score] => 230
+                )
+
+            [5] => Array
+                (
+                    [recipe_id] => 2782
+                    [title] => Chicken and Cashew Nut
+                    [score] => 230
+                )
+
+            [6] => Array
+                (
+                    [recipe_id] => 2855
+                    [title] => 4 Ingredient Chicken and Red Curry Rice
+                    [score] => 230
+                )
+
+            [7] => Array
+                (
+                    [recipe_id] => 2930
+                    [title] => 4 Ingredient Pizza stuffed Chicken breast
+                    [score] => 230
+                )
+
+            [8] => Array
+                (
+                    [recipe_id] => 2941
+                    [title] => 4 Ingredient Chicken and Mushroom Pesto Pasta
+                    [score] => 230
+                )
+
+            [9] => Array
+                (
+                    [recipe_id] => 2959
+                    [title] => 4 Ingredient Lemon Garlic Chicken and Potatoes
+                    [score] => 230
+                )
+
+        )
+
+)

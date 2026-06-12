@@ -187,8 +187,295 @@ function recipe_ai_exact_match_score(
 
     return 0;
 }
-/*recipe search*/
+
+/*Search Query Normalizer*/
+function recipe_ai_extract_search_terms($query)
+{
+    $query = strtolower($query);
+
+    $query = preg_replace(
+        '/[^a-z0-9\s]/',
+        ' ',
+        $query
+    );
+
+    $words = preg_split(
+        '/\s+/',
+        $query
+    );
+
+    $words = array_filter(
+        $words,
+        function($word){
+
+            return strlen($word) >= 3;
+
+        }
+    );
+
+    $terms = [];
+
+    foreach ($words as $word) {
+
+        $word = trim($word);
+
+        if (strlen($word) < 3) {
+            continue;
+        }
+
+        if (
+            recipe_ai_is_noise_word(
+                $word
+            )
+        ) {
+            continue;
+        }
+
+        $terms[] = $word;
+    }
+
+    return array_values(
+        array_unique($terms)
+    );
+
+   
+}
+/*Create Scoring Function*/
+function recipe_ai_calculate_score(
+    array $terms,
+    array $recipe
+)
+{
+    $debug = [];
+
+    $score = 0;
+
+    foreach ($terms as $term) {
+
+        /*
+         * Title
+         */
+        if (
+            stripos(
+                $recipe['title'],
+                $term
+            ) !== false
+        ) {
+            $score += 100;
+            $debug[] = "TITLE: {$term} (+100)";
+        }
+
+        /*
+         * Ingredients
+         */
+        if (
+            stripos(
+                $recipe['ingredients_text'],
+                $term
+            ) !== false
+        ) {
+            $score += 70;
+            $debug[] = "INGREDIENT: {$term} (+70)";
+        }
+
+        /*
+         * Keywords
+         */
+        if (
+            stripos(
+                $recipe['keywords_text'],
+                $term
+            ) !== false
+        ) {
+            $score += 50;
+            $debug[] = "SEARCH_TEXT: {$term} (+10)";
+        }
+
+        /*
+         * Cuisine
+         */
+        if (
+            stripos(
+                $recipe['cuisine_text'],
+                $term
+            ) !== false
+        ) {
+            $score += 30;
+            $debug[] = "cuisine_text: {$term} (+30)";
+
+        }
+
+        /*
+         * Search Text
+         */
+        if (
+            stripos(
+                $recipe['search_text'],
+                $term
+            ) !== false
+        ) {
+            $score += 10;
+            $debug[] = "search_text: {$term} (+10)";
+
+        }
+    }
+
+    return [
+        'score' => $score,
+        'debug' => $debug
+    ];
+}
+/*Rewrite Search Function*/
 function recipe_ai_search(
+    $query,
+    $limit = 20
+)
+{
+    global $wpdb;
+
+    $table =
+        $wpdb->prefix .
+        'recipe_ai_recipes';
+
+    $recipes =
+        $wpdb->get_results(
+            "SELECT * FROM {$table}",
+            ARRAY_A
+        );
+
+    $terms =
+        recipe_ai_extract_search_terms(
+            $query
+        );
+
+
+    recipe_ai_log([
+        'query' => $query,
+        'terms' => $terms
+    ]);
+
+    $results = [];
+
+    foreach ($recipes as $recipe) {
+
+        $scoring  =recipe_ai_calculate_score($terms,$recipe);
+        $recipe['score'] = $scoring['score'];
+
+        $recipe['debug'] =$scoring['debug'];
+        
+        if ($recipe['score'] <= 0) {
+            continue;
+        }
+        $recipe['matched_terms'] = [];
+
+        foreach ($terms as $term) {
+
+            if (
+                stripos(
+                    $recipe['search_text'],
+                    $term
+                ) !== false
+            ) {
+
+                $recipe['matched_terms'][] =
+                    $term;
+
+            }
+        }
+
+        $recipe['score'] =$recipe['score'];
+
+        $results[] =$recipe;
+    }
+
+    usort(
+        $results,
+        function($a, $b){
+
+            return
+                $b['score']
+                <=>
+                $a['score'];
+
+        }
+    );
+
+    $top_results =
+    array_slice(
+        $results,
+        0,
+        10
+    );
+
+    recipe_ai_log([
+        'query' => $query,
+        'results' => array_map(
+            function($recipe){
+
+                return [
+
+                    'recipe_id' =>
+                        $recipe['recipe_id'],
+
+                    'title' =>
+                        $recipe['title'],
+
+                    'score' =>
+                        $recipe['score']
+
+                ];
+
+            },
+            $top_results
+        )
+    ]);
+
+    return array_slice(
+        $results,
+        0,
+        $limit
+    );
+}
+/*Remove Common Words*/
+function recipe_ai_is_noise_word($word)
+{
+    $noise_words = [
+
+        'what',
+        'can',
+        'cook',
+        'with',
+        'make',
+        'recipe',
+        'recipes',
+        'show',
+        'give',
+        'find',
+        'need',
+        'want',
+        'best',
+        'easy',
+        'simple',
+        'using',
+        'have',
+        'got',
+        'some',
+        'any',
+        'for',
+        'and',
+        'the',
+        'from'
+
+    ];
+
+    return in_array(
+        $word,
+        $noise_words,
+        true
+    );
+}
+/*recipe search*/
+function recipe_ai_search_old(
     $query,
     $limit = 20
 )
@@ -209,7 +496,6 @@ function recipe_ai_search(
         recipe_ai_extract_ingredients(
             $query
         );
-    print_r($user_ingredients);
 
     $user_ingredients =
         recipe_ai_extract_ingredients_from_words(
@@ -283,9 +569,6 @@ function recipe_ai_search(
             => $b['score']
             <=> $a['score']
     );
-
-    print_r($user_ingredients);
-    print_r($results);
 
     return array_slice(
         $results,
