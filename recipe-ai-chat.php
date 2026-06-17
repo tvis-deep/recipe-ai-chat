@@ -19,6 +19,7 @@ require_once RECIPE_AI_PATH . 'includes/importer.php';
 require_once RECIPE_AI_PATH . 'includes/embeddings.php';
 require_once RECIPE_AI_PATH . 'includes/helpers.php';
 require_once RECIPE_AI_PATH . 'includes/search.php';
+require_once RECIPE_AI_PATH . 'includes/search-phrase.php';
 require_once RECIPE_AI_PATH . 'includes/ingredient-matcher.php';
 add_action('wp_enqueue_scripts', function() {
     wp_enqueue_script(

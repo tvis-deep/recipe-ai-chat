@@ -142,13 +142,13 @@ function recipe_ai_calculate_score(
     /*
      * Exact query match
      */
-    $match = recipe_ai_score_phrase(
-            $query,
-            $recipe
-        );
-    $score += $match;
+    // $match = recipe_ai_score_phrase(
+    //         $query,
+    //         $recipe
+    //     );
+    // $score += $match;
         
-    $debug[] = "Exact query match: (+{$match})";
+    // $debug[] = "Exact query match: (+{$match})";
 
     /*
      * Title
@@ -205,6 +205,7 @@ function recipe_ai_calculate_score(
         );
     $score += $match;
     $debug[] = "Search match: (+{$match})";
+
 
     return [
         'score' => $score,
@@ -564,14 +565,38 @@ function recipe_ai_search(
         'terms' => $terms
     ]);
 
+    /*
+    * Phrase Text extract
+    */
+    // $phrases =
+    //     recipe_ai_extract_phrases(
+    //         $query
+    //     );
+
+    // recipe_ai_log([
+    //     'query' => $query,
+    //     'phrases' => $phrases
+    // ]);
+
     $results = [];
 
     foreach ($recipes as $recipe) {
 
         $scoring  =  recipe_ai_calculate_score( $query, $terms, $recipe );
+         /*
+         * phrase Text
+         */
+        // $match =  recipe_ai_score_phrase_match(
+        //     $phrases,
+        //     $recipe
+        // );
+
+        // $scoring['score'] = $scoring['score'] + $match;
+        // $scoring['debug'][] = "phrase Text match: (+{$match})";
+
         $recipe['score'] = $scoring['score'];
 
-        $recipe['debug'] =$scoring['debug'];
+        $recipe['debug'] = $scoring['debug'];
 
         if ($recipe['score'] <= 0) {
             continue;
