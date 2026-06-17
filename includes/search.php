@@ -1,7 +1,216 @@
 <?php
-
 defined('ABSPATH') || exit;
+/*Central Weight Configuration*/
+function recipe_ai_get_weights(){
+    return [
+        'exact_title'       => 500,
+        'partial_title'     => 100,
 
+        'ingredient'        => 80,
+        'keyword'           => 60,
+        'cuisine'           => 40,
+        'search_text'       => 10,
+        
+        'phrase_bonus'      => 200,
+
+        'nutrition_bonus'   => 300,
+        'intent_bonus'      => 300,
+
+    ];
+}
+/*Title Scoring*/
+function recipe_ai_score_title(
+    $query,
+    $terms,
+    $recipe
+)
+{
+    $weights =
+        recipe_ai_get_weights();
+
+    $score = 0;
+
+    $title =
+        strtolower(
+            $recipe['title']
+        );
+
+    /*
+     * Exact phrase match
+     */
+    if (
+        strpos(
+            $title,
+            strtolower($query)
+        ) !== false
+    ) {
+
+        $score +=
+            $weights['exact_title'];
+
+    }
+
+    /*
+     * Individual terms
+     */
+    foreach ($terms as $term) {
+
+        if (
+            strpos(
+                $title,
+                $term
+            ) !== false
+        ) {
+            $score +=
+                $weights['partial_title'];
+        }
+
+    }
+
+    return $score;
+}
+/*Generic Field Scorer*/
+function recipe_ai_score_field(
+    $terms,
+    $field_value,
+    $weight
+)
+{
+   
+    $score = 0;
+
+    $field_value =
+        strtolower(
+            $field_value
+        );
+
+    foreach ($terms as $term) {
+
+        if (
+            strpos(
+                $field_value,
+                $term
+            ) !== false
+        ) {
+
+            $score +=
+                $weight;
+
+        }
+
+    }
+
+    return $score;
+}
+/*Phrase Matching*/
+function recipe_ai_score_phrase(
+    $query,
+    $recipe
+)
+{
+    $weights =
+        recipe_ai_get_weights();
+
+    if (
+        strpos(
+            strtolower(
+                $recipe['search_text']
+            ),
+            strtolower($query)
+        ) !== false
+    ) {
+        return
+            $weights['phrase_bonus'];
+
+    }
+
+    return 0;
+}
+/*Main Scoring Engine*/
+function recipe_ai_calculate_score(
+    $query,
+    $terms,
+    $recipe
+)
+{
+    $weights =
+        recipe_ai_get_weights();
+
+    $score = 0;
+    $debug = [];
+
+    /*
+     * Exact query match
+     */
+    $match = recipe_ai_score_phrase(
+            $query,
+            $recipe
+        );
+    $score += $match;
+        
+    $debug[] = "Exact query match: (+{$match})";
+
+    /*
+     * Title
+     */
+    $match = recipe_ai_score_title(
+            $query,
+            $terms,
+            $recipe
+        );
+    $score += $match;
+
+    $debug[] = "Title match: (+{$match})";
+
+    /*
+     * Ingredients
+     */
+    $match = recipe_ai_score_field(
+            $terms,
+            $recipe['ingredients_text'],
+            $weights['ingredient']
+        );
+    $score += $match;
+    $debug[] = "Ingredients match: (+{$match})";
+
+    /*
+     * Keywords
+     */
+    $match = recipe_ai_score_field(
+            $terms,
+            $recipe['keywords_text'],
+            $weights['keyword']
+        );
+    $score += $match;
+    $debug[] = "Keywords match: (+{$match})";
+
+
+    /*
+     * Cuisine
+     */
+    $match = recipe_ai_score_field(
+            $terms,
+            $recipe['cuisine_text'],
+            $weights['cuisine']
+        );
+    $score += $match;
+    $debug[] = "Cuisine match: (+{$match})";
+    /*
+     * Search Text
+     */
+    $match = recipe_ai_score_field(
+            $terms,
+            $recipe['search_text'],
+            $weights['search_text']
+        );
+    $score += $match;
+    $debug[] = "Search match: (+{$match})";
+
+    return [
+        'score' => $score,
+        'debug' => $debug
+    ];
+}
 function recipe_ai_search_by_ingredients(
     $query,
     $limit = 20
@@ -240,8 +449,9 @@ function recipe_ai_extract_search_terms($query)
 
    
 }
+
 /*Create Scoring Function*/
-function recipe_ai_calculate_score(
+function recipe_ai_calculate_score_old(
     array $terms,
     array $recipe
 )
@@ -358,7 +568,7 @@ function recipe_ai_search(
 
     foreach ($recipes as $recipe) {
 
-        $scoring  =recipe_ai_calculate_score($terms,$recipe);
+        $scoring  =  recipe_ai_calculate_score( $query, $terms, $recipe );
         $recipe['score'] = $scoring['score'];
 
         $recipe['debug'] =$scoring['debug'];
@@ -366,22 +576,7 @@ function recipe_ai_search(
         if ($recipe['score'] <= 0) {
             continue;
         }
-        $recipe['matched_terms'] = [];
 
-        foreach ($terms as $term) {
-
-            if (
-                stripos(
-                    $recipe['search_text'],
-                    $term
-                ) !== false
-            ) {
-
-                $recipe['matched_terms'][] =
-                    $term;
-
-            }
-        }
 
         $recipe['score'] =$recipe['score'];
 
@@ -422,7 +617,7 @@ function recipe_ai_search(
 
                     'score' =>
                         $recipe['score'],
-                        
+
                     'debug' =>
                         $recipe['debug']
 
