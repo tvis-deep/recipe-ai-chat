@@ -1,0 +1,67 @@
+{
+    "ground beef": [
+        "mince",
+        "beef mince"
+    ],
+
+    "mince": [
+        "ground beef",
+        "beef mince"
+    ],
+
+    "capsicum": [
+        "bell pepper"
+    ],
+
+    "bell pepper": [
+        "capsicum"
+    ],
+
+    "coriander": [
+        "cilantro"
+    ],
+
+    "cilantro": [
+        "coriander"
+    ],
+
+    "rocket": [
+        "arugula"
+    ],
+
+    "arugula": [
+        "rocket"
+    ],
+
+    "courgette": [
+        "zucchini"
+    ],
+
+    "zucchini": [
+        "courgette"
+    ],
+
+    "aubergine": [
+        "eggplant"
+    ],
+
+    "eggplant": [
+        "aubergine"
+    ],
+
+    "prawns": [
+        "shrimp"
+    ],
+
+    "shrimp": [
+        "prawns"
+    ],
+
+    "garbanzo beans": [
+        "chickpeas"
+    ],
+
+    "chickpeas": [
+        "garbanzo beans"
+    ]
+}

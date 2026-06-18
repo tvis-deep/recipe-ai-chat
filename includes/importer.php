@@ -174,6 +174,12 @@ function recipe_ai_import_recipe(
             $search_text
         );
 
+    /*Meal Type*/
+    $meal_types = $recipe['parent']['tags']['by_meal'] ?? [];
+    
+    /*cook methods*/
+    $cook_methods =$recipe['parent']['tags']['by_method']?? [];
+
     $wpdb->replace(
         $table,
         [
@@ -229,10 +235,156 @@ function recipe_ai_import_recipe(
             'updated_at' =>
                 current_time(
                     'mysql'
-                )
+                ),
+
+            'meal_type_text' =>
+                implode(
+                    ',',
+                    $meal_types
+                ),
+
+            'cook_method_text' =>
+                implode(
+                    ',',
+                    $cook_methods
+                ),
+
+            'diet_text' =>
+                implode(
+                    ',',
+                    recipe_ai_detect_diet(
+                        $recipe
+                    )
+                ),
+
+            'occasion_text' =>
+                implode(
+                    ',',
+                    recipe_ai_detect_occasion(
+                        $recipe
+                    )
+                ),
+
+            'protein' =>
+                intval(
+                    $recipe['nutrition']['protein']
+                    ?? 0
+                ),
+
+            'prep_time' =>
+                intval(
+                    $recipe['prep_time']
+                    ?? 0
+                ),
+
+            'cook_time' =>
+                intval(
+                    $recipe['cook_time']
+                    ?? 0
+                ),
+
+            'total_time' =>
+                intval(
+                    $recipe['total_time']
+                    ?? 0
+                ),
 
         ]
     );
+}
+/*Diet Detection*/
+function recipe_ai_detect_diet(
+    $recipe
+)
+{
+    $text =
+        strtolower(
+            json_encode($recipe)
+        );
+
+    $diets = [];
+
+    if (
+        strpos(
+            $text,
+            'vegan'
+        ) !== false
+    ) {
+        $diets[] = 'vegan';
+    }
+
+    if (
+        strpos(
+            $text,
+            'vegetarian'
+        ) !== false
+    ) {
+        $diets[] = 'vegetarian';
+    }
+
+    if (
+        strpos(
+            $text,
+            'gluten free'
+        ) !== false
+    ) {
+        $diets[] = 'gluten_free';
+    }
+
+    if (
+        strpos(
+            $text,
+            'keto'
+        ) !== false
+    ) {
+        $diets[] = 'keto';
+    }
+
+    return $diets;
+}
+/*Occasion Detection*/
+function recipe_ai_detect_occasion(
+    $recipe
+)
+{
+    $text =
+        strtolower(
+            json_encode($recipe)
+        );
+
+    $occasions = [];
+
+    if (
+        strpos(
+            $text,
+            'christmas'
+        ) !== false
+    ) {
+        $occasions[] =
+            'christmas';
+    }
+
+    if (
+        strpos(
+            $text,
+            'easter'
+        ) !== false
+    ) {
+        $occasions[] =
+            'easter';
+    }
+
+    if (
+        strpos(
+            $text,
+            'party'
+        ) !== false
+    ) {
+        $occasions[] =
+            'party';
+    }
+
+    return $occasions;
 }
 /*Import Entire JSON File*/
 function recipe_ai_import_json_file(

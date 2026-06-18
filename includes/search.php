@@ -565,6 +565,8 @@ function recipe_ai_search(
         'terms' => $terms
     ]);
 
+    
+
     /*
     * Phrase Text extract
     */
@@ -578,6 +580,12 @@ function recipe_ai_search(
     //     'phrases' => $phrases
     // ]);
 
+    /*
+    * Synonyms Text extract
+    */
+    // $synonyms_terms = recipe_ai_expand_synonyms($terms);
+
+    
     $results = [];
 
     foreach ($recipes as $recipe) {

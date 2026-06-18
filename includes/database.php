@@ -105,6 +105,22 @@ function recipe_ai_create_recipe_table()
 
         recipe_json LONGTEXT,
 
+        meal_type_text TEXT NULL,
+
+        cook_method_text TEXT NULL,
+        
+        diet_text TEXT NULL,
+        
+        occasion_text TEXT NULL,
+        
+        protein INT DEFAULT 0,
+        
+        prep_time INT DEFAULT 0,
+        
+        cook_time INT DEFAULT 0,
+        
+        total_time INT DEFAULT 0,
+
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
 
         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
