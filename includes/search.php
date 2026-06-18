@@ -554,11 +554,18 @@ function recipe_ai_search(
             ARRAY_A
         );
 
+
+    /*fuzzy Correction*/
+    // $query =recipe_ai_fuzzy_fix_query($query);
+
+    /* extract search terms*/
     $terms =
         recipe_ai_extract_search_terms(
             $query
         );
 
+    /*fuzzy Correction terms only for recipes's ingredient*/
+    // $terms = recipe_ai_fuzzy_fix_terms($terms);
 
     recipe_ai_log([
         'query' => $query,
@@ -585,7 +592,7 @@ function recipe_ai_search(
     */
     // $synonyms_terms = recipe_ai_expand_synonyms($terms);
 
-    
+
     $results = [];
 
     foreach ($recipes as $recipe) {
@@ -670,41 +677,23 @@ function recipe_ai_search(
 /*Remove Common Words*/
 function recipe_ai_is_noise_word($word)
 {
-    $noise_words = [
+    $noise_words = [];
+    if (empty($noise_words)) {
 
-        'what',
-        'can',
-        'cook',
-        'with',
-        'make',
-        'recipe',
-        'recipes',
-        'show',
-        'give',
-        'find',
-        'need',
-        'want',
-        'best',
-        'easy',
-        'simple',
-        'using',
-        'have',
-        'got',
-        'some',
-        'something',
-        'any',
-        'for',
-        'and',
-        'the',
-        'from'
+        $file = RECIPE_AI_PATH . 'data/noise_word.json';
 
-    ];
+        if (!file_exists($file)) {
+            return [];
+        }
 
-    return in_array(
-        $word,
-        $noise_words,
-        true
-    );
+        $json = file_get_contents($file);
+        $noise_words = json_decode($json, true);
+
+        if (!is_array($noise_words)) {
+            $noise_words = [];
+        }
+    }
+    return in_array($word, $noise_words, true);
 }
 /*recipe search*/
 function recipe_ai_search_old(

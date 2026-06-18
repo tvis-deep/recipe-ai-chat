@@ -21,6 +21,7 @@ require_once RECIPE_AI_PATH . 'includes/helpers.php';
 require_once RECIPE_AI_PATH . 'includes/search.php';
 require_once RECIPE_AI_PATH . 'includes/search-phrase.php';
 require_once RECIPE_AI_PATH . 'includes/synonym.php';
+require_once RECIPE_AI_PATH . 'includes/search-fuzzy.php';
 require_once RECIPE_AI_PATH . 'includes/ingredient-matcher.php';
 add_action('wp_enqueue_scripts', function() {
     wp_enqueue_script(
