@@ -10,6 +10,8 @@ define('RECIPE_AI_VERSION', '1.0.1');
 require_once RECIPE_AI_PATH . 'logs/logger.php';
 /* config file */
 require_once plugin_dir_path(__FILE__) . 'includes/config.php';
+/* JSON Loader helper file */
+require_once plugin_dir_path(__FILE__) . 'includes/helpers/JSON-loader.php';
 
 require_once RECIPE_AI_PATH . 'includes/api.php';
 require_once RECIPE_AI_PATH . 'includes/openai.php';

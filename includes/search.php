@@ -674,20 +674,16 @@ function recipe_ai_search(
         $limit
     );
 }
+
 /*Remove Common Words*/
 function recipe_ai_is_noise_word($word)
 {
     $noise_words = [];
     if (empty($noise_words)) {
 
-        $file = RECIPE_AI_PATH . 'data/noise_word.json';
-
-        if (!file_exists($file)) {
-            return [];
-        }
-
-        $json = file_get_contents($file);
-        $noise_words = json_decode($json, true);
+        $noise_words = recipe_ai_load_json(
+            'noise_word.json'
+        );
 
         if (!is_array($noise_words)) {
             $noise_words = [];
