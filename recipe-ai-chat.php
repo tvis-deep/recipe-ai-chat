@@ -12,6 +12,8 @@ require_once RECIPE_AI_PATH . 'logs/logger.php';
 require_once plugin_dir_path(__FILE__) . 'includes/config.php';
 /* JSON Loader helper file */
 require_once plugin_dir_path(__FILE__) . 'includes/helpers/JSON-loader.php';
+/* main-extractor  helper file */
+require_once plugin_dir_path(__FILE__) . 'includes/helpers/main-extractor.php';
 
 require_once RECIPE_AI_PATH . 'includes/api.php';
 require_once RECIPE_AI_PATH . 'includes/openai.php';

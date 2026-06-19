@@ -559,11 +559,11 @@ function recipe_ai_search(
     // $query =recipe_ai_fuzzy_fix_query($query);
 
     /* extract search terms*/
-    $terms =
-        recipe_ai_extract_search_terms(
-            $query
-        );
-
+    // $terms = recipe_ai_extract_search_terms($query);
+    /* extract search terms from all Detection*/
+    $terms = recipe_ai_extract_entities($query);
+    print_r($terms);
+    exit;
     /*fuzzy Correction terms only for recipes's ingredient*/
     // $terms = recipe_ai_fuzzy_fix_terms($terms);
 
