@@ -93,6 +93,8 @@ function recipe_ai_create_recipe_table()
 
         ingredients_text LONGTEXT,
 
+        ingredients_normalized LONGTEXT,
+
         keywords_text LONGTEXT,
 
         cuisine_text TEXT,
