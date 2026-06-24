@@ -5,11 +5,15 @@ Plugin Name: Recipe AI Chat
 defined('ABSPATH') || exit;
 define('RECIPE_AI_URL', plugin_dir_url(__FILE__));
 define('RECIPE_AI_PATH', plugin_dir_path(__FILE__));
-define('RECIPE_AI_VERSION', '1.0.0');
+define('RECIPE_AI_VERSION', '1.0.1');
 /* logoger file */
 require_once RECIPE_AI_PATH . 'logs/logger.php';
 /* config file */
 require_once plugin_dir_path(__FILE__) . 'includes/config.php';
+/* JSON Loader helper file */
+require_once plugin_dir_path(__FILE__) . 'includes/helpers/JSON-loader.php';
+/* main-extractor  helper file */
+require_once plugin_dir_path(__FILE__) . 'includes/helpers/main-extractor.php';
 
 require_once RECIPE_AI_PATH . 'includes/api.php';
 require_once RECIPE_AI_PATH . 'includes/openai.php';

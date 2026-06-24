@@ -1,0 +1,25 @@
+{
+    "ingredient_search": [
+        "with",
+        "using"
+    ],
+
+    "healthy": [
+        "healthy"
+    ],
+
+    "high_protein": [
+        "high protein"
+    ],
+
+    "quick_meal": [
+        "quick",
+        "fast",
+        "easy"
+    ],
+
+    "budget": [
+        "cheap",
+        "budget"
+    ]
+}

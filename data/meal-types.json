@@ -1,0 +1,23 @@
+{
+    "breakfast": [
+        "breakfast"
+    ],
+
+    "lunch": [
+        "lunch"
+    ],
+
+    "dinner": [
+        "dinner",
+        "supper"
+    ],
+
+    "snack": [
+        "snack"
+    ],
+
+    "dessert": [
+        "dessert",
+        "sweet"
+    ]
+}

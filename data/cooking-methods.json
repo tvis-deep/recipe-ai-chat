@@ -1,0 +1,27 @@
+{
+    "air_fryer": [
+        "air fryer",
+        "airfryer"
+    ],
+
+    "slow_cooker": [
+        "slow cooker",
+        "crockpot"
+    ],
+
+    "bbq": [
+        "bbq",
+        "barbecue",
+        "grill"
+    ],
+
+    "oven": [
+        "oven baked",
+        "baked"
+    ],
+
+    "stovetop": [
+        "stovetop",
+        "pan fried"
+    ]
+}

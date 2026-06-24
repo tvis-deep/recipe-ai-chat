@@ -1,0 +1,32 @@
+{
+    "vegan": [
+        "vegan"
+    ],
+    "vegetarian": [
+        "vegetarian"
+    ],
+    "gluten_free": [
+        "gluten free",
+        "gluten-free"
+    ],
+    "dairy_free": [
+        "dairy free",
+        "dairy-free"
+    ],
+    "keto": [
+        "keto",
+        "ketogenic"
+    ],
+    "low_carb": [
+        "low carb",
+        "low-carb"
+    ],
+    "high_protein": [
+        "high protein",
+        "high-protein"
+    ],
+    "low_calorie": [
+        "low calorie",
+        "low-calorie"
+    ]
+}
